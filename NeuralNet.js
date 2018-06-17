@@ -16,7 +16,7 @@ class NeuralNet{
     });
   }
 
-  duplicate(){
+  duplicate(){1
     let clone = new NeuralNet(this.inputNodes, this.hiddenNodes, this.outputNodes);
     clone.inputWeights = this.inputWeights;
     clone.hiddenWeights = this.hiddenWeights;
