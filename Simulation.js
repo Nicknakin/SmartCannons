@@ -1,7 +1,10 @@
 var cannons = [];
-var numCannons = 200;
+var numCannons = 100;
 var r = 30;
 var genAlive;
+var generation = 1;
+var average;
+var bestAverage = Infinity;
 
 let target;
 
@@ -37,9 +40,14 @@ if(genAlive){
 }
 
 function newGeneration(){
+  average = 0;
   cannons.forEach((cannon) => {
     cannon.distance = Math.pow(cannon.ball.x-target[0], 2) + Math.pow(cannon.ball.y-target[1], 2);
+    average += Math.sqrt(cannon.distance);
   });
+  average /= numCannons;
+  if(average < bestAverage)
+    bestAverage = average;
   for(let i = 0; i < 1; i++){
     let lowest = i;
     for(let k = i; k < cannons.length; k++){
@@ -52,25 +60,38 @@ function newGeneration(){
   }
   tf.tidy(() => {
     for(let i = 1; i < cannons.length; i++){
-      cannons[i].y = Math.random()*(height-2*r)+r;
       let oldBrain = cannons[i].brain;
       if(Math.round(Math.random()))
         cannons[i].brain = cannons[i].merge(cannons[0]).duplicate();
       else
         cannons[i].brain = cannons[0].merge(cannons[i]).duplicate();
       tf.dispose(oldBrain);
-      cannons[i].brain.mutate();
+      if(i > cannons.length/2)
+        cannons[i].brain.mutate();
     }
   });
   startGeneration();
 }
 
 function startGeneration(){
+  let newCannons = [];
+  tf.tidy(() => {
+    let i = 0;
+    cannons.forEach((cannon) => {
+      newCannons.push(new Cannon(cannon.x, cannon.y, cannon.r, cannon.color, cannon.brain.duplicate()));
+    })
+  });
+
+  cannons = newCannons;
+
+  let time = millis();
+  generation++;
   cannons.forEach((cannon) => {
     cannon.predict()
     cannon.launch();
   });
   genAlive = true;
+  console.log(millis()-time);
 }
 
 function newTarget(){

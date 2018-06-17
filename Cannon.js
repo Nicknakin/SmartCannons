@@ -1,10 +1,10 @@
 class Cannon{
-  constructor(x, y, r, color){
+  constructor(x, y, r, color, brain){
     this.x = x;
     this.y = height-y;
     this.angle = 0;
     this.power = 10;
-    this.brain = new NeuralNet(1, 4, 2);
+    this.brain = (!brain)? new NeuralNet(1, 6, 2): brain;
     this.color = color;
     this.r = r;
     this.calcCannonEnd();
@@ -44,7 +44,7 @@ class Cannon{
   }
 
   predict(){
-    let prediction = this.brain.predict([this.y]);
+    let prediction = this.brain.predict([(this.y)/height]);
     this.angle = 2*Math.PI*(prediction[0]-1/2);
     this.power = 20*prediction[1];
   }
