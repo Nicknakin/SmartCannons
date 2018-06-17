@@ -1,7 +1,7 @@
 class Cannon{
   constructor(x, y, r, color, bool){
     this.x = x;
-    this.y = height-y;
+    this.y = height/2;//height-y;
     this.angle = 0;
     this.brain = (!bool)? new NeuralNet(3, 3, 2): null;
     this.color = color;

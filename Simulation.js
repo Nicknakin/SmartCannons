@@ -6,7 +6,7 @@ var genAlive;
 let target;
 
 function setup(){
-  createCanvas(800,800);
+  createCanvas(screen.width-20, screen.height-20);
   startGeneration();
 }
 
@@ -15,9 +15,9 @@ if(genAlive){
   genAlive = false;
   rectMode(CORNER);
   background(0);
-  fill(255);
+  fill(255,0,0);
   noStroke();
-  ellipse(target[0],target[1],16)
+  ellipse(target[0],target[1],60)
     cannons.forEach((cannon) => {
       cannon.draw();
       cannon.update();
@@ -42,7 +42,6 @@ if(genAlive){
     }
 
     for(let i = 1; i < cannons.length; i++){
-      cannons[i].y = Math.floor(Math.random()*(height-2*r)+r);
       if(Math.random() > 0.5)
         cannons[i].brain = cannons[i].merge(cannons[0]).duplicate();
       else
@@ -72,7 +71,8 @@ function startGeneration(){
 
 function newTarget(){
   let bool = Math.round(Math.random());
-  return [width-Math.random()*width*bool, height-Math.random()*height*(1-bool)];
+  return [width, height];
+  //return [width-Math.random()*width*bool, height-Math.random()*height*(1-bool)];
 }
 
 function getRandomColor() {
@@ -81,5 +81,5 @@ function getRandomColor() {
   for (var i = 0; i < 6; i++) {
     color += letters[Math.floor(Math.random() * 16)];
   }
-  return color+"44";
+  return color+"88";
 }
