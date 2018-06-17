@@ -28,28 +28,36 @@ class NeuralNet{
   mutate(){
     tf.tidy(() => {
       let temp = this.inputWeights.dataSync();
-      let randomIndex = Math.floor(Math.random()*temp.length);
-      temp[randomIndex] = temp[randomIndex]*(Math.random()*0.5+0.75);
-      this.inputWeights = tf.tensor1d(temp);
+      for(let i = 0; i < temp.length/4; i++){
+        let randomIndex = Math.floor(Math.random()*temp.length);
+        temp[randomIndex] = temp[randomIndex]*(Math.random()*0.5+0.75);
+        this.inputWeights = tf.tensor(temp,[this.inputNodes, this.hiddenNodes]);
+      }
       temp = this.hiddenWeights.dataSync();
-      randomIndex = Math.floor(Math.random()*temp.length);
-      temp[randomIndex] = temp[randomIndex]*(Math.random()*0.5+0.75);
-      this.outputWeights = tf.tensor1d(temp);
+      for(let i = 0; i < temp.length/4; i++){
+        let randomIndex = Math.floor(Math.random()*temp.length);
+        temp[randomIndex] = temp[randomIndex]*(Math.random()*0.5+0.75);
+        this.outputWeights = tf.tensor(temp,[this.hiddenNodes, this.outputNodes]);
+        return [this.inputWeights, this.outputWeights];
+      }
     });
   }
 
   merge(that){
     let merged = new NeuralNet(this.inputNodes, this.hiddenNodes, this.outputNodes);
-    let thisCurrentInputWeights = Array.from(this.inputWeights.dataSync());
-    let thisCurrentHiddenWeights = Array.from(this.hiddenWeights.dataSync());
-    let thatCurrentInputWeights = Array.from(that.inputWeights.dataSync());
-    let thatCurrentHiddenWeights = Array.from(that.hiddenWeights.dataSync());
-    let randomInputIndex = Math.floor(Math.random()*this.inputNodes);
-    let randomHiddenIndex = Math.floor(Math.random()*this.hiddenNodes);
-    let newInputWeights = thisCurrentInputWeights.splice(0, randomInputIndex).concat(thatCurrentInputWeights.splice(randomInputIndex));
-    let newHiddenWeights = thisCurrentHiddenWeights.splice(0, randomHiddenIndex).concat(thatCurrentHiddenWeights.splice(randomHiddenIndex));
-    merged.inputWeights = tf.tensor(newInputWeights, [this.inputNodes, this.hiddenNodes]);
-    merged.hiddenWeights = tf.tensor(newHiddenWeights, [this.hiddenNodes, this.outputNodes]);
+    tf.tidy(() => {
+      let thisCurrentInputWeights = Array.from(this.inputWeights.dataSync());
+      let thisCurrentHiddenWeights = Array.from(this.hiddenWeights.dataSync());
+      let thatCurrentInputWeights = Array.from(that.inputWeights.dataSync());
+      let thatCurrentHiddenWeights = Array.from(that.hiddenWeights.dataSync());
+      let randomInputIndex = Math.floor(Math.random()*this.inputNodes);
+      let randomHiddenIndex = Math.floor(Math.random()*this.hiddenNodes);
+      let newInputWeights = thisCurrentInputWeights.splice(0, randomInputIndex).concat(thatCurrentInputWeights.splice(randomInputIndex));
+      let newHiddenWeights = thisCurrentHiddenWeights.splice(0, randomHiddenIndex).concat(thatCurrentHiddenWeights.splice(randomHiddenIndex));
+      merged.inputWeights = tf.tensor(newInputWeights, [this.inputNodes, this.hiddenNodes]);
+      merged.hiddenWeights = tf.tensor(newHiddenWeights, [this.hiddenNodes, this.outputNodes]);
+      return [merged, merged.inputWeights, merged.hiddenWeights]
+    });
     return merged;
   }
 }
