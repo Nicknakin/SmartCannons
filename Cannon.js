@@ -1,14 +1,15 @@
 class Cannon{
-  constructor(x, y, r, color){
+  constructor(x, y, r, color, bool){
     this.x = x;
     this.y = height-y;
     this.angle = 0;
-    this.brain = new NeuralNet(3, 3, 2);
+    this.brain = (!bool)? new NeuralNet(3, 3, 2): null;
     this.color = color;
     this.r = r;
     this.calcCannonEnd();
     this.live;
     this.ball;
+    this.distance = 0;
   }
 
   draw(){
@@ -46,6 +47,9 @@ class Cannon{
     this.calcCannonEnd();
   }
 
+  merge(that){
+    return this.brain.merge(that.brain);
+  }
 }
 
  class CannonBall{

@@ -41,12 +41,16 @@ class NeuralNet{
   merge(that){
     let merged = new NeuralNet(this.inputNodes, this.hiddenNodes, this.outputNodes);
     tf.tidy(() => {
+      let thisCurrentInputWeights = Array.from(this.inputWeights.dataSync());
+      let thisCurrentHiddenWeights = Array.from(this.hiddenWeights.dataSync());
+      let thatCurrentInputWeights = Array.from(that.inputWeights.dataSync());
+      let thatCurrentHiddenWeights = Array.from(that.hiddenWeights.dataSync());
       let randomInputIndex = Math.floor(Math.random()*this.inputNodes);
-      let randomHiddenIndex = Math.floor(Math.random()*this.inputNodes);
-      let newInputWeights = this.inputWeights.dataSync().splice(0, randomInputIndex).concat(that.inputWeights.dataSync().splice(randomInputIndex));
-      let newOutputWeights = this.outputWeights.dataSync().splice(0, randomOutputIndex).concat(that.outputWeights.dataSync().splice(randomOutputIndex));
+      let randomHiddenIndex = Math.floor(Math.random()*this.hiddenNodes);
+      let newInputWeights = thisCurrentInputWeights.splice(0, randomInputIndex).concat(thatCurrentInputWeights.splice(randomInputIndex));
+      let newHiddenWeights = thisCurrentHiddenWeights.splice(0, randomHiddenIndex).concat(thatCurrentHiddenWeights.splice(randomHiddenIndex));
       merged.inputWeights = newInputWeights;
-      merged.outputWeights = newOutputWeights;
+      merged.hiddenWeights = newHiddenWeights;
     });
     return merged;
   }
