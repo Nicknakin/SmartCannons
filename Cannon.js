@@ -33,6 +33,7 @@ class Cannon{
   launch(){
     this.calcCannonEnd();
     this.live = true;
+    this.ball = null;
     this.ball = new CannonBall(this.x, this.y, 8, this.color, this.angle, this.power);
   }
 
