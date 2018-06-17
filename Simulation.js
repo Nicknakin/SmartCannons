@@ -28,13 +28,13 @@ if(genAlive){
   }
   else{
     cannons.forEach((cannon) => {
-      cannon.distance = Math.sqrt(Math.pow(cannon.ball.x-target[0], 2) + Math.sqrt(cannon.ball.y-target[1], 2));
+      cannon.distance = Math.sqrt(Math.pow(cannon.ball.x-target[0], 2) + Math.pow(cannon.ball.y-target[1], 2));
     });
     for(let i = 0; i < cannons.length; i++){
       let lowest = i;
       for(let k = i; k < cannons.length; k++){
         if(cannons[lowest].distance > cannons[k].distance)
-          highest = k;
+          lowest = k;
       }
       let temp = cannons[i];
       cannons[i] = cannons[lowest];
@@ -71,8 +71,7 @@ function startGeneration(){
 
 function newTarget(){
   let bool = Math.round(Math.random());
-  return [width, height];
-  //return [width-Math.random()*width*bool, height-Math.random()*height*(1-bool)];
+  return [width-Math.random()*width*bool, height-Math.random()*height*(1-bool)];
 }
 
 function getRandomColor() {

@@ -43,7 +43,7 @@ class Cannon{
   predict(target){
     let prediction = this.brain.predict([target[0], target[1], this.y]);
     this.angle = Math.PI*(prediction[0]-1/2);
-    this.power = 5/prediction[1];
+    this.power = 20*prediction[1];
     this.calcCannonEnd();
   }
 
