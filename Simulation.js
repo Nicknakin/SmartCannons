@@ -1,5 +1,5 @@
 var cannons = [];
-var numCannons = 50;
+var numCannons = 100;
 var r = 30;
 var genAlive;
 
@@ -31,23 +31,25 @@ if(genAlive){
       cannon.distance = Math.sqrt(Math.pow(cannon.ball.x-target[0], 2) + Math.sqrt(cannon.ball.y-target[1], 2));
     });
     for(let i = 0; i < cannons.length; i++){
-      let highest = i;
+      let lowest = i;
       for(let k = i; k < cannons.length; k++){
-        if(cannons[highest].distance < cannons[k].distance)
+        if(cannons[lowest].distance > cannons[k].distance)
           highest = k;
       }
       let temp = cannons[i];
-      cannons[i] = cannons[highest];
-      cannons[highest] = temp;
+      cannons[i] = cannons[lowest];
+      cannons[lowest] = temp;
     }
 
     for(let i = 1; i < cannons.length; i++){
       cannons[i].y = Math.floor(Math.random()*(height-2*r)+r);
       if(Math.random() > 0.5)
-        cannons[i].brain = cannons[i].merge(cannons[0]).brain.duplicate();
+        cannons[i].brain = cannons[i].merge(cannons[0]).duplicate();
       else
-        cannons[i].brain = cannons[0].merge(cannons[i]).brain.duplicate();
+        cannons[i].brain = cannons[0].merge(cannons[i]).duplicate();
     }
+
+    cannons = cannons.splice(0,Math.round(numCannons*3/4));
 
     startGeneration();
   }
@@ -56,7 +58,7 @@ if(genAlive){
 
 function startGeneration(){
   if(cannons.length != numCannons)
-    for(let i = 0; i < numCannons; i++){
+    for(let i = cannons.length; i < numCannons; i++){
       cannons.push(new Cannon(30, Math.floor(Math.random()*(height-2*r)+r), r, getRandomColor()));
     }
 
