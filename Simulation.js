@@ -28,15 +28,10 @@ if(genAlive){
     });
   }
   else{
-    let average = 0;
     cannons.forEach((cannon) => {
       cannon.distance = Math.pow(cannon.ball.x-target[0], 2) + Math.pow(cannon.ball.y-target[1], 2);
-      average += Math.sqrt(cannon.distance);
     });
-    average /= numCannons;
-    if(bestAverage > average)
-      bestAverage = average;
-    for(let i = 0; i < cannons.length; i++){
+    for(let i = 0; i < 1; i++){
       let lowest = i;
       for(let k = i; k < cannons.length; k++){
         if(cannons[lowest].distance > cannons[k].distance)

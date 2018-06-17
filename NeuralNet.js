@@ -29,15 +29,15 @@ class NeuralNet{
       let temp = this.inputWeights.dataSync();
       let newInputWeights;
       let newHiddenWeights;
-      for(let i = 0; i < temp.length/2; i++){
+      for(let i = 0; i < 2; i++){
         let randomIndex = Math.floor(Math.random()*temp.length);
-        temp[randomIndex] = temp[randomIndex]*(Math.random()*0.5+0.75);
+        temp[randomIndex] = temp[randomIndex]*(Math.random());
         newInputWeights = tf.tensor(temp,[this.inputNodes, this.hiddenNodes]);
       }
       temp = this.hiddenWeights.dataSync();
-      for(let i = 0; i < temp.length/2; i++){
+      for(let i = 0; i < 2; i++){
         let randomIndex = Math.floor(Math.random()*temp.length);
-        temp[randomIndex] = temp[randomIndex]*(Math.random()*0.5+0.75);
+        temp[randomIndex] = temp[randomIndex]*(Math.random());
         newHiddenWeights = tf.tensor(temp,[this.hiddenNodes, this.outputNodes]);
       }
       tf.keep([newInputWeights, newHiddenWeights]);
