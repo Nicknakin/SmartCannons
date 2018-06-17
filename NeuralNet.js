@@ -8,12 +8,11 @@ class NeuralNet{
   }
 
   predict(inputs){
-    let output;
-    tf.tidy(() => {
+    let output = tf.tidy(() => {
       let inputLayer = tf.tensor(inputs, [1, this.inputNodes]);
       let hiddenLayer = inputLayer.matMul(this.inputWeights).sigmoid();
       let outputLayer = hiddenLayer.matMul(this.hiddenWeights).sigmoid();
-      output = outputLayer.dataSync();
+      return outputLayer.dataSync();
     });
     return output;
   }
@@ -28,19 +27,27 @@ class NeuralNet{
   mutate(){
     tf.tidy(() => {
       let temp = this.inputWeights.dataSync();
-      for(let i = 0; i < temp.length/4; i++){
+      let newInputWeights;
+      let newHiddenWeights;
+      for(let i = 0; i < temp.length/2; i++){
         let randomIndex = Math.floor(Math.random()*temp.length);
         temp[randomIndex] = temp[randomIndex]*(Math.random()*0.5+0.75);
-        this.inputWeights = tf.tensor(temp,[this.inputNodes, this.hiddenNodes]);
+        newInputWeights = tf.tensor(temp,[this.inputNodes, this.hiddenNodes]);
       }
       temp = this.hiddenWeights.dataSync();
-      for(let i = 0; i < temp.length/4; i++){
+      for(let i = 0; i < temp.length/2; i++){
         let randomIndex = Math.floor(Math.random()*temp.length);
         temp[randomIndex] = temp[randomIndex]*(Math.random()*0.5+0.75);
-        this.outputWeights = tf.tensor(temp,[this.hiddenNodes, this.outputNodes]);
-        return [this.inputWeights, this.outputWeights];
+        newHiddenWeights = tf.tensor(temp,[this.hiddenNodes, this.outputNodes]);
       }
+      tf.keep([newInputWeights, newHiddenWeights]);
     });
+  }
+
+  dispose(){
+
+    tf.dispose(this.inputWeights);
+    tf.dispose(this.hiddenWeights);
   }
 
   merge(that){
@@ -56,7 +63,8 @@ class NeuralNet{
       let newHiddenWeights = thisCurrentHiddenWeights.splice(0, randomHiddenIndex).concat(thatCurrentHiddenWeights.splice(randomHiddenIndex));
       merged.inputWeights = tf.tensor(newInputWeights, [this.inputNodes, this.hiddenNodes]);
       merged.hiddenWeights = tf.tensor(newHiddenWeights, [this.hiddenNodes, this.outputNodes]);
-      return [merged, merged.inputWeights, merged.hiddenWeights]
+      tf.keep(merged.inputWeights);
+      tf.keep(merged.hiddenWeights);
     });
     return merged;
   }

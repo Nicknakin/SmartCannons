@@ -2,6 +2,7 @@ var cannons = [];
 var numCannons = 200;
 var r = 30;
 var genAlive;
+var bestAverage = Infinity;
 
 let target;
 
@@ -27,12 +28,14 @@ if(genAlive){
     });
   }
   else{
-    let sum = 0;
+    let average = 0;
     cannons.forEach((cannon) => {
-      cannon.distance = Math.sqrt(Math.pow(cannon.ball.x-target[0], 2) + Math.pow(cannon.ball.y-target[1], 2));
-      sum += cannon.distance;
+      cannon.distance = Math.pow(cannon.ball.x-target[0], 2) + Math.pow(cannon.ball.y-target[1], 2);
+      average += Math.sqrt(cannon.distance);
     });
-    console.log(sum/numCannons);
+    average /= numCannons;
+    if(bestAverage > average)
+      bestAverage = average;
     for(let i = 0; i < cannons.length; i++){
       let lowest = i;
       for(let k = i; k < cannons.length; k++){
@@ -43,16 +46,18 @@ if(genAlive){
       cannons[i] = cannons[lowest];
       cannons[lowest] = temp;
     }
-
-    for(let i = 1; i < cannons.length; i++){
-      cannons[i].y = Math.random()*(height-2*r)+r;
-      if(Math.random() > 0.5)
-        cannons[i].brain = cannons[i].merge(cannons[0]).duplicate();
-      else
-        cannons[i].brain = cannons[0].merge(cannons[i]).duplicate();
-      cannons[i].brain.mutate();
-    }
-
+    tf.tidy(() => {
+      for(let i = 1; i < cannons.length; i++){
+        cannons[i].y = Math.random()*(height-2*r)+r;
+        let oldBrain = cannons[i].brain;
+        if(Math.round(Math.random()))
+          cannons[i].brain = cannons[i].merge(cannons[0]).duplicate();
+        else
+          cannons[i].brain = cannons[0].merge(cannons[i]).duplicate();
+        tf.dispose(oldBrain);
+        cannons[i].brain.mutate();
+      }
+    });
     startGeneration();
   }
 
@@ -66,7 +71,7 @@ function startGeneration(){
 
   target = newTarget();
   cannons.forEach((cannon) => {
-    cannon.predict(target)
+    cannon.predict()
     cannon.launch();
   });
   genAlive = true;
@@ -74,7 +79,8 @@ function startGeneration(){
 
 function newTarget(){
   let bool = Math.round(Math.random());
-  return [width-Math.random()*width*bool/2, height-Math.random()*height*(1-bool)/2];
+  return [width, height];
+  //return [width-Math.random()*width*bool/2, height-Math.random()*height*(1-bool)/2];
 }
 
 function getRandomColor() {

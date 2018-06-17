@@ -4,7 +4,7 @@
      this.x = x;
      this.y = y;
      this.r = r;
-     this.a = 0.1;
+     this.a = 0.25;
      this.color = color;
      this.angle = -(angle%Math.PI);
      this.velocity = [power*Math.cos(this.angle), power*Math.sin(this.angle)];

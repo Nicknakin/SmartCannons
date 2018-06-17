@@ -3,7 +3,8 @@ class Cannon{
     this.x = x;
     this.y = height-y;
     this.angle = 0;
-    this.brain = (!bool)? new NeuralNet(3, 3, 2): null;
+    this.power = 10;
+    this.brain = (!bool)? new NeuralNet(1, 4, 2): null;
     this.color = color;
     this.r = r;
     this.calcCannonEnd();
@@ -30,6 +31,7 @@ class Cannon{
   }
 
   launch(){
+    this.calcCannonEnd();
     this.live = true;
     this.ball = new CannonBall(this.x, this.y, 8, this.color, this.angle, this.power);
   }
@@ -40,11 +42,10 @@ class Cannon{
     }
   }
 
-  predict(target){
-    let prediction = this.brain.predict([target[0], target[1], this.y]);
+  predict(){
+    let prediction = this.brain.predict([this.y]);
     this.angle = Math.PI*(prediction[0]-1/2);
     this.power = 20*prediction[1];
-    this.calcCannonEnd();
   }
 
   merge(that){
