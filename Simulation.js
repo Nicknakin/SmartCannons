@@ -26,8 +26,10 @@ if(genAlive){
     fill(255,0,0);
     noStroke();
     ellipse(target[0],target[1],60)
+    for(let i = 0; i < 5; i++)
+      cannons[i].draw();
     cannons.forEach((cannon) => {
-      cannon.draw();
+      // cannon.draw();
       cannon.update();
       if(cannon.live){
         genAlive = true;
