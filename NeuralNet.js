@@ -24,23 +24,19 @@ class NeuralNet{
   }
 
   mutate(){
-    tf.tidy(() => {
+    let newWeights = tf.tidy(() => {
       let temp = this.inputWeights.dataSync();
-      let newInputWeights;
-      let newHiddenWeights;
-      for(let i = 0; i < temp.length/2; i++){
-        let randomIndex = Math.floor(Math.random()*temp.length);
-        temp[randomIndex] *= (Math.random()+.5)/2;
-        newInputWeights = tf.tensor(temp,[this.inputNodes, this.hiddenNodes]);
-      }
+      let randomIndex = Math.floor(Math.random()*temp.length);
+      temp[randomIndex] *= (Math.random()+.5)/2;
+      let newInputWeights = tf.tensor(temp,[this.inputNodes, this.hiddenNodes]);
       temp = this.hiddenWeights.dataSync();
-      for(let i = 0; i < temp.length/2; i++){
-        let randomIndex = Math.floor(Math.random()*temp.length);
-        temp[randomIndex] *= (Math.random()+.5)/2;
-        newHiddenWeights = tf.tensor(temp,[this.hiddenNodes, this.outputNodes]);
-      }
-      tf.keep([newInputWeights, newHiddenWeights]);
+      randomIndex = Math.floor(Math.random()*temp.length);
+      temp[randomIndex] *= (Math.random()+.5)/2;
+      let newHiddenWeights = tf.tensor(temp,[this.hiddenNodes, this.outputNodes]);
+      return [newInputWeights, newHiddenWeights];
     });
+    this.inputWeights = newWeights[0];
+    this.hiddenWeights = newWeights[1];
   }
 
   dispose(){

@@ -11,7 +11,7 @@
    }
 
    move(){
-     if(this.y >= height || this.x >= width || this.x <= 0){
+     if(this.y >= height || this.x >= width || this.x <= 0 || this.y <= 0){
       this.x = (this.x >= width)? width: this.x;
       this.y = (this.y >= height)? height: this.y;
       this.velocity = [0, 0];
